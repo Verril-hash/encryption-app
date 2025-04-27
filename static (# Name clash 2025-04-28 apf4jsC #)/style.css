@@ -1,0 +1,239 @@
+/* Universal styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Apply Roboto as the main font and Poppins for headings */
+body {
+  font-family: 'Roboto', sans-serif; /* Main body font */
+  background: #121212; /* Dark background */
+  color: #e0e0e0; /* Light text color */
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column; /* Added for better alignment */
+}
+
+h1 {
+  font-family: 'Poppins', sans-serif; /* Header font */
+  margin-bottom: 30px;
+  font-size: 32px;
+  color: #3498db;
+  font-weight: 600; /* Slightly bold */
+  text-align: center; /* Center align text */
+}
+
+/* Styling for form container */
+.container {
+  background: #1c1c1c; /* Dark grey background */
+  padding: 40px 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  width: 400px;
+  text-align: center;
+  transition: transform 0.3s ease-in-out;
+}
+
+.container:hover {
+  transform: translateY(-10px);
+}
+
+/* Form input styles */
+input[type="file"],
+input[type="password"] {
+  width: 100%;
+  padding: 15px;
+  margin: 15px 0;
+  border-radius: 8px;
+  border: 1px solid #333;
+  background-color: #2e2e2e;
+  color: #e0e0e0;
+  font-size: 16px;
+  font-family: 'Roboto', sans-serif; /* Use Roboto for inputs */
+  transition: background-color 0.3s ease;
+}
+
+input[type="file"]:focus,
+input[type="password"]:focus {
+  background-color: #444;
+  outline: none;
+  border-color: #3498db;
+}
+
+/* Button Styling */
+button {
+  width: 100%;
+  padding: 15px;
+  background-color: #3498db; /* Blue button */
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 18px;
+  font-family: 'Poppins', sans-serif; /* Use Poppins for buttons */
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  margin-top: 20px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Hover effect for buttons */
+button:hover {
+  background-color: #2980b9;
+  transform: translateY(-3px);
+}
+
+/* Enhanced hover effect for buttons with .btn class */
+.btn:hover {
+  background-color: #2980b9;
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Disabled button */
+button:disabled {
+  background-color: #7f8c8d;
+  cursor: not-allowed;
+}
+
+/* Error messages */
+p.error {
+  color: #e74c3c;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+/* Footer */
+footer {
+  margin-top: 30px;
+}
+
+footer a {
+  color: #3498db;
+  font-size: 16px;
+}
+
+footer a:hover {
+  color: #1d69e3;
+}
+
+/* Hover effect for lock icons */
+.lock-icon:hover {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 10px #3498db);
+}
+
+/* Media Queries for Responsiveness */
+
+/* For devices with a max width of 768px (tablets and smaller screens) */
+@media only screen and (max-width: 768px) {
+  .container {
+    width: 90%; /* Make the form container take up more width on small screens */
+    padding: 30px 20px;
+  }
+
+  h1 {
+    font-size: 28px; /* Smaller heading font size */
+  }
+
+  input[type="file"],
+  input[type="password"],
+  button {
+    font-size: 14px; /* Smaller input and button font size for small screens */
+    padding: 12px;
+  }
+
+  button {
+    margin-top: 15px;
+  }
+
+  .card-container {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+/* For mobile devices with a max width of 480px (smaller phones) */
+@media only screen and (max-width: 480px) {
+  .container {
+    width: 95%; /* Take almost full width on very small devices */
+    padding: 20px 15px;
+  }
+
+  h1 {
+    font-size: 24px; /* Even smaller heading font size */
+  }
+
+  input[type="file"],
+  input[type="password"],
+  button {
+    font-size: 12px; /* Smallest font size for very small screens */
+    padding: 10px;
+  }
+
+  button {
+    margin-top: 12px;
+  }
+}
+
+.navigation {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.nav-link {
+  color: #3498db;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+  color: #5dade2;
+}
+
+/* container */
+.card-container {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 30px;
+}
+
+/* each card */
+.card {
+  background: #1c1c1c;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+  width: 180px;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+}
+
+/* link wrap */
+.card-link {
+  text-decoration: none;     /* remove underline */
+  color: #3498db;            /* blue text */
+  display: block;
+}
+
+.card-link:hover h2 {
+  color: #2980b9;
+}
+
+/* heading inside card */
+.card-link h2 {
+  margin-top: 15px;
+  font-size: 20px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  color: #3498db;
+  transition: color 0.3s ease;
+}
