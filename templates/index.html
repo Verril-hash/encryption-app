@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Secure Image App</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>Secure Your Images</h1>
+
+    <!-- Card Container to hold the encrypt and decrypt sections -->
+    <div class="card-container">
+      <!-- Encrypt Card -->
+      <div class="card">
+        <a href="{{ url_for('encrypt_pdf') }}" class="card-link">
+          <svg class="lock-icon" xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="#3498db" viewBox="0 0 24 24">
+            <path d="M12 17a2 2 0 100-4 2 2 0 000 4zm6-7h-1V7a5 5 0 00-10 0v3H6a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V12a2 2 0 00-2-2zm-8-3a3 3 0 016 0v3H10V7z"/>
+          </svg>
+          <h2>Encrypt</h2>
+        </a>
+      </div>
+
+      <!-- Decrypt Card -->
+      <div class="card">
+        <a href="{{ url_for('decrypt_pdf') }}" class="card-link">
+          <svg class="lock-icon" xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="#3498db" viewBox="0 0 24 24">
+            <path d="M17 8h-1V6a5 5 0 10-10 0h2a3 3 0 116 0v2H7a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V10a2 2 0 00-2-2zm0 12H7V10h10v10z"/>
+          </svg>
+          <h2>Decrypt</h2>
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+
