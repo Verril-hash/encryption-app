@@ -1,6 +1,6 @@
 Flask
 cryptography
 gunicorn
-pillow
+Pillow
 PyPDF2
 fpdf
