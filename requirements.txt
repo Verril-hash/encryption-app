@@ -4,3 +4,4 @@ gunicorn
 Pillow
 PyPDF2
 fpdf
+streamlit
