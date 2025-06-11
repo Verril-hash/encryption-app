@@ -1,45 +1,59 @@
-from flask import Flask, render_template, request, send_file, flash, redirect, url_for
-import os, io
+import streamlit as st
+import os
+import io
 from PIL import Image
 from PyPDF2 import PdfReader, PdfWriter
-from werkzeug.utils import secure_filename
 
-app = Flask(__name__)
-app.secret_key = 'supersecretkey'
+# Set page config for better UI
+st.set_page_config(page_title="PDF Encryption/Decryption App", layout="wide")
 
+# Define allowed file extensions
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 def allowed_file(filename):
+    """Check if the file extension is allowed."""
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-UPLOAD_FOLDER = 'uploads'
+# Create directories (for local testing; limited use in Streamlit Cloud)
+UPLOAD_FOLDER = 'Uploads'
 ENCRYPTED_FOLDER = 'encrypted'
 DECRYPTED_FOLDER = 'decrypted'
 for d in (UPLOAD_FOLDER, ENCRYPTED_FOLDER, DECRYPTED_FOLDER):
     os.makedirs(d, exist_ok=True)
 
-@app.route('/encrypt', methods=['GET', 'POST'])
-def encrypt_pdf():
-    if request.method == 'POST':
-        if 'file' not in request.files or 'password' not in request.form:
-            flash("No file or password provided.")
-            return redirect(url_for('encrypt_pdf'))
-        
-        img_file = request.files['file']
-        password = request.form['password']
+# Sidebar navigation
+st.sidebar.title("Navigation")
+page = st.sidebar.radio("Go to", ["Home", "Encrypt PDF", "Decrypt PDF"])
 
-        if img_file.filename == '':
-            flash("No selected file.")
-            return redirect(url_for('encrypt_pdf'))
+if page == "Home":
+    st.title("Welcome to the PDF Encryption/Decryption App")
+    st.write("Use this app to:")
+    st.write("- **Encrypt**: Convert an image (PNG/JPG) to an encrypted PDF.")
+    st.write("- **Decrypt**: Unlock an encrypted PDF with a password.")
+    st.write("Select an option from the sidebar to get started.")
 
-        if img_file and allowed_file(img_file.filename):
+elif page == "Encrypt PDF":
+    st.title("Encrypt PDF from Image")
+    st.write("Upload a PNG or JPG image and set a password to create an encrypted PDF.")
+
+    # File uploader and password input
+    img_file = st.file_uploader("Upload Image", type=ALLOWED_EXTENSIONS)
+    password = st.text_input("Enter Password for Encryption", type="password")
+
+    if st.button("Encrypt"):
+        if not img_file:
+            st.error("No file uploaded.")
+        elif not password:
+            st.error("Please enter a password.")
+        elif img_file and allowed_file(img_file.name):
             try:
-                img = Image.open(img_file.stream).convert('RGB')
+                # Open and convert image to PDF
+                img = Image.open(img_file).convert('RGB')
                 pdf_bytes = io.BytesIO()
                 img.save(pdf_bytes, format='PDF')
                 pdf_bytes.seek(0)
 
-                # Now encrypt the PDF
+                # Encrypt the PDF
                 reader = PdfReader(pdf_bytes)
                 writer = PdfWriter()
                 for page in reader.pages:
@@ -51,59 +65,61 @@ def encrypt_pdf():
                 writer.write(encrypted_output)
                 encrypted_output.seek(0)
 
-                return send_file(encrypted_output,
-                                 as_attachment=True,
-                                 download_name="encrypted.pdf",
-                                 mimetype='application/pdf')
+                # Provide download button
+                st.success("PDF encrypted successfully!")
+                st.download_button(
+                    label="Download Encrypted PDF",
+                    data=encrypted_output,
+                    file_name="encrypted.pdf",
+                    mime="application/pdf"
+                )
             except Exception as e:
-                flash(f"Error processing image: {str(e)}")
-                return redirect(url_for('encrypt_pdf'))
+                st.error(f"Error processing image: {str(e)}")
         else:
-            flash("Invalid file type. Please upload a PNG or JPG image.")
-            return redirect(url_for('encrypt_pdf'))
-    return render_template('encrypt.html')
+            st.error("Invalid file type. Please upload a PNG or JPG image.")
 
-@app.route('/decrypt', methods=['GET', 'POST'])
-def decrypt_pdf():
-    if request.method == 'POST':
-        upload = request.files.get('file')
-        password = request.form.get('password', '')
-        if not upload or not password:
-            flash("Please upload an encrypted PDF and enter its password.")
-            return redirect(url_for('decrypt_pdf'))
+elif page == "Decrypt PDF":
+    st.title("Decrypt PDF")
+    st.write("Upload an encrypted PDF and enter its password to decrypt.")
 
-        pdf_stream = io.BytesIO(upload.read())
-        reader = PdfReader(pdf_stream)
+    # File uploader and password input
+    pdf_file = st.file_uploader("Upload Encrypted PDF", type="pdf")
+    password = st.text_input("Enter Password for Decryption", type="password")
 
-        if not reader.is_encrypted:
-            flash("This PDF is not encrypted.")
-            return redirect(url_for('decrypt_pdf'))
+    if st.button("Decrypt"):
+        if not pdf_file:
+            st.error("Please upload a PDF file.")
+        elif not password:
+            st.error("Please enter a password.")
+        else:
+            try:
+                pdf_stream = io.BytesIO(pdf_file.read())
+                reader = PdfReader(pdf_stream)
 
-        try:
-            reader.decrypt(password)
-        except Exception:
-            flash("Wrong password or corrupted file.")
-            return redirect(url_for('decrypt_pdf'))
+                if not reader.is_encrypted:
+                    st.error("This PDF is not encrypted.")
+                else:
+                    try:
+                        reader.decrypt(password)
+                    except Exception:
+                        st.error("Wrong password or corrupted file.")
+                        st.stop()
 
-        writer = PdfWriter()
-        for page in reader.pages:
-            writer.add_page(page)
+                    writer = PdfWriter()
+                    for page in reader.pages:
+                        writer.add_page(page)
 
-        out_stream = io.BytesIO()
-        writer.write(out_stream)
-        out_stream.seek(0)
+                    out_stream = io.BytesIO()
+                    writer.write(out_stream)
+                    out_stream.seek(0)
 
-        name = 'decrypted_' + upload.filename
-        return send_file(out_stream,
-                         as_attachment=True,
-                         download_name=name,
-                         mimetype='application/pdf')
-
-    return render_template('decrypt.html')
-
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+                    # Provide download button
+                    st.success("PDF decrypted successfully!")
+                    st.download_button(
+                        label="Download Decrypted PDF",
+                        data=out_stream,
+                        file_name=f"decrypted_{pdf_file.name}",
+                        mime="application/pdf"
+                    )
+            except Exception as e:
+                st.error(f"Error processing PDF: {str(e)}")
