@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            height: 100%;
+            font-size: clamp(14px, 2vw, 16px);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #1e293b 75%, #0f172a 100%);
+            background-color: #0f172a;
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            padding: clamp(1rem, 3vw, 2rem);
+            color: #f1f5f9;
+        }
+
+        /* Animated Background Grid */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
+            background-size: clamp(40px, 6vw, 60px) clamp(40px, 6vw, 60px);
+            animation: grid-move 20s linear infinite;
+            z-index: -3;
+        }
+        @keyframes grid-move {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(clamp(40px, 6vw, 60px), clamp(40px, 6vw, 60px)); }
+        }
+
+        /* Floating Orbs for Dynamic Background */
+        .floating-orb {
+            position: fixed;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(147, 197, 253, 0.08));
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            animation: float 12s ease-in-out infinite;
+            z-index: -2;
+        }
+        .orb-1 {
+            width: clamp(120px, 20vw, 250px);
+            height: clamp(120px, 20vw, 250px);
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        .orb-2 {
+            width: clamp(80px, 15vw, 180px);
+            height: clamp(80px, 15vw, 180px);
+            top: 70%;
+            right: 10%;
+            animation-delay: 4s;
+        }
+        .orb-3 {
+            width: clamp(60px, 10vw, 120px);
+            height: clamp(60px, 10vw, 120px);
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 8s;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+            25% { transform: translateY(-30px) rotate(90deg) scale(1.1); }
+            50% { transform: translateY(20px) rotate(180deg) scale(0.9); }
+            75% { transform: translateY(-20px) rotate(270deg) scale(1.05); }
+        }
+
+        /* Page header styling */
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #1d4ed8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: clamp(1rem, 4vw, 2rem) 0 clamp(1.5rem, 4vw, 2.5rem);
+            text-align: center;
+            animation: text-glow 3s ease-in-out infinite alternate;
+        }
+        @keyframes text-glow {
+            0% { filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.2)); }
+            100% { filter: drop-shadow(0 0 15px rgba(59, 130, 246, 0.4)); }
+        }
+
+        /* Main container styling */
+        .container {
+            width: 100%;
+            max-width: clamp(800px, 90vw, 1200px);
+            margin: 0 auto clamp(2rem, 5vw, 3rem);
+            padding: clamp(0.5rem, 2vw, 1rem);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Desktop Table View - Enhanced Glassmorphism */
+        .activity-table-wrapper {
+            background: rgba(30, 58, 138, 0.3);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(147, 197, 253, 0.2);
+            border-radius: clamp(1rem, 4vw, 1.5rem);
+            overflow: hidden;
+            box-shadow: 
+                0 20px 25px -5px rgb(0 0 0 / 0.1),
+                0 8px 10px -6px rgb(0 0 0 / 0.1),
+                0 0 25px rgba(59, 130, 246, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: clamp(1.5rem, 4vw, 2rem);
+            position: relative;
+            overflow: hidden;
+        }
+        .activity-table-wrapper::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: conic-gradient(
+                from 0deg,
+                transparent,
+                rgba(59, 130, 246, 0.3),
+                transparent,
+                rgba(147, 197, 253, 0.3),
+                transparent
+            );
+            border-radius: inherit;
+            animation: rotate-border 8s linear infinite;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        @keyframes rotate-border {
+            to { transform: rotate(360deg); }
+        }
+        .activity-table-wrapper:hover::before {
+            opacity: 1;
+        }
+        .activity-table-wrapper:hover {
+            transform: translateY(-8px);
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.25),
+                0 0 30px rgba(59, 130, 246, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border-color: rgba(147, 197, 253, 0.4);
+        }
+
+        .activity-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: transparent;
+        }
+        .activity-table th {
+            background: rgba(30, 64, 175, 0.6);
+            color: #dbeafe;
+            font-weight: 600;
+            font-size: clamp(0.75rem, 2vw, 0.875rem);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: clamp(0.75rem, 2vw, 1.5rem);
+            text-align: left;
+            border: none;
+        }
+        .activity-table td {
+            padding: clamp(0.75rem, 2vw, 1rem) clamp(1rem, 3vw, 1.5rem);
+            color: #f1f5f9;
+            font-weight: 400;
+            border: none;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+            background: transparent;
+        }
+        .activity-table tbody tr {
+            background: transparent;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .activity-table tbody tr:hover {
+            background: rgba(30, 64, 175, 0.3);
+            transform: translateX(8px);
+        }
+        .activity-table tbody tr:hover td {
+            color: #dbeafe;
+        }
+
+        /* Mobile Card View - Enhanced Glassmorphism */
+        .mobile-cards {
+            display: none;
+        }
+        .mobile-card {
+            background: rgba(30, 58, 138, 0.3);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(147, 197, 253, 0.2);
+            padding: clamp(1rem, 3vw, 1.5rem);
+            border-radius: clamp(0.75rem, 3vw, 1rem);
+            margin-bottom: clamp(0.75rem, 2vw, 1rem);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 10px 15px -3px rgb(0 0 0 / 0.1),
+                0 4px 6px -4px rgb(0 0 0 / 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .mobile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 15px 20px -5px rgb(0 0 0 / 0.1),
+                0 6px 8px -6px rgb(0 0 0 / 0.1),
+                0 0 20px rgba(59, 130, 246, 0.2);
+            border-color: rgba(147, 197, 253, 0.4);
+        }
+        .mobile-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: conic-gradient(
+                from 0deg,
+                transparent,
+                rgba(59, 130, 246, 0.2),
+                transparent,
+                rgba(147, 197, 253, 0.2),
+                transparent
+            );
+            border-radius: inherit;
+            animation: rotate-border 8s linear infinite;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .mobile-card:hover::before {
+            opacity: 1;
+        }
+        .mobile-card-filename {
+            font-weight: 600;
+            color: #93c5fd;
+            margin-bottom: clamp(0.25rem, 1vw, 0.5rem);
+            word-break: break-all;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+        }
+        .mobile-card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: clamp(0.5rem, 2vw, 1rem);
+            margin-top: clamp(0.5rem, 2vw, 0.75rem);
+        }
+        .mobile-card-timestamp {
+            color: #cbd5e1;
+            font-size: clamp(0.75rem, 2vw, 0.875rem);
+        }
+        .mobile-card-status {
+            font-weight: 600;
+            text-transform: capitalize;
+            padding: clamp(0.25rem, 1vw, 0.5rem) clamp(0.5rem, 2vw, 0.75rem);
+            border-radius: clamp(0.25rem, 1vw, 0.5rem);
+            font-size: clamp(0.7rem, 2vw, 0.75rem);
+            background: rgba(59, 130, 246, 0.2);
+            color: #93c5fd;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        /* Navigation link styling */
+        .navigation {
+            text-align: center;
+            margin-top: clamp(1rem, 3vw, 2rem);
+            padding-top: clamp(1rem, 3vw, 1.5rem);
+            border-top: 1px solid rgba(59, 130, 246, 0.2);
+            width: 100%;
+            max-width: clamp(300px, 80vw, 500px);
+        }
+        .nav-link {
+            color: #60a5fa;
+            text-decoration: none;
+            font-weight: 600;
+            font-family: 'Space Grotesk', sans-serif;
+            transition: all 0.3s ease;
+            position: relative;
+            margin-left: clamp(0.25rem, 1vw, 0.5rem);
+            font-size: clamp(0.9rem, 2vw, 1rem);
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #3b82f6;
+            transform: translateY(-1px);
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Responsive breakpoints */
+        @media (max-width: 768px) {
+            .activity-table-wrapper {
+                display: none;
+            }
+            .mobile-cards {
+                display: block;
+            }
+            .container {
+                padding: 0;
+            }
+            .mobile-card-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: clamp(0.75rem, 2vw, 1rem);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .mobile-card {
+                padding: clamp(0.75rem, 2vw, 1rem);
+            }
+        }
+
+        /* iOS Safari specific fixes */
+        @supports (-webkit-touch-callout: none) {
+            body {
+                background: #0f172a !important;
+                background-attachment: fixed;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Enhanced floating orbs -->
+    <div class="floating-orb orb-1"></div>
+    <div class="floating-orb orb-2"></div>
+    <div class="floating-orb orb-3"></div>
+
+    <h1>Activity</h1>
+    <div class="container">
+        <!-- Desktop Table View -->
+        <div class="activity-table-wrapper">
+            <table class="activity-table">
+                <thead>
+                    <tr>
+                        <th>Filename</th>
+                        <th>Timestamp</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for activity in activities %}
+                    <tr>
+                        <td>{{ activity.filename }}</td>
+                        <td>{{ activity.timestamp }}</td>
+                        <td>{{ activity.status }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Mobile Card View -->
+        <div class="mobile-cards">
+            {% for activity in activities %}
+            <div class="mobile-card">
+                <div class="mobile-card-filename">{{ activity.filename }}</div>
+                <div class="mobile-card-meta">
+                    <span class="mobile-card-timestamp">{{ activity.timestamp }}</span>
+                    <span class="mobile-card-status">{{ activity.status }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="navigation">
+        <a href="{{ url_for('dashboard') }}" class="nav-link">Back to Dashboard</a>
+    </div>
+</body>
+</html>

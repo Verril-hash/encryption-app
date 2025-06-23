@@ -2,17 +2,366 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Encrypt Image</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    /* Reset and base styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html {
+      height: 100%;
+      font-size: clamp(14px, 2vw, 16px);
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #1e293b 75%, #0f172a 100%);
+      background-color: #0f172a;
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+      padding: 1.5rem;
+    }
+
+    /* Animated Background Grid */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+          linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
+      background-size: clamp(40px, 6vw, 60px) clamp(40px, 6vw, 60px);
+      animation: grid-move 20s linear infinite;
+      z-index: -3;
+    }
+    @keyframes grid-move {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(clamp(40px, 6vw, 60px), clamp(40px, 6vw, 60px)); }
+    }
+
+    /* Floating Orbs for Dynamic Background */
+    .floating-orb {
+      position: fixed;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(147, 197, 253, 0.08));
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      animation: float 12s ease-in-out infinite;
+      z-index: -2;
+    }
+    .orb-1 {
+      width: clamp(120px, 20vw, 250px);
+      height: clamp(120px, 20vw, 250px);
+      top: 10%;
+      left: 10%;
+      animation-delay: 0s;
+    }
+    .orb-2 {
+      width: clamp(80px, 15vw, 180px);
+      height: clamp(80px, 15vw, 180px);
+      top: 70%;
+      right: 10%;
+      animation-delay: 4s;
+    }
+    .orb-3 {
+      width: clamp(60px, 10vw, 120px);
+      height: clamp(60px, 10vw, 120px);
+      bottom: 20%;
+      left: 20%;
+      animation-delay: 8s;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+      25% { transform: translateY(-30px) rotate(90deg) scale(1.1); }
+      50% { transform: translateY(20px) rotate(180deg) scale(0.9); }
+      75% { transform: translateY(-20px) rotate(270deg) scale(1.05); }
+    }
+
+    /* Main container styling with enhanced glassmorphism */
+    .container {
+      background: rgba(30, 58, 138, 0.25);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid rgba(147, 197, 253, 0.2);
+      border-radius: clamp(1.5rem, 4vw, 2rem);
+      padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 3vw, 2.5rem);
+      width: 100%;
+      max-width: clamp(320px, 85vw, 500px);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 
+          0 25px 50px -12px rgba(0, 0, 0, 0.25),
+          0 0 30px rgba(59, 130, 246, 0.15),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      animation: container-entrance 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1;
+    }
+    @keyframes container-entrance {
+      0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* Subtle rotating border effect */
+    .container::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: conic-gradient(
+          from 0deg,
+          transparent,
+          rgba(59, 130, 246, 0.3),
+          transparent,
+          rgba(147, 197, 253, 0.3),
+          transparent
+      );
+      border-radius: inherit;
+      animation: rotate-border 8s linear infinite;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    @keyframes rotate-border {
+      to { transform: rotate(360deg); }
+    }
+    .container:hover::before {
+      opacity: 1;
+    }
+
+    /* Shimmer effect */
+    .container::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(147, 197, 253, 0.1), transparent);
+      transition: left 0.6s ease;
+    }
+    .container:hover::after {
+      left: 100%;
+    }
+
+    /* Header styling */
+    .container h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.75rem, 5vw, 2.5rem);
+      font-weight: 700;
+      background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #1d4ed8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+      text-align: center;
+      animation: text-glow 3s ease-in-out infinite alternate;
+    }
+    @keyframes text-glow {
+      0% { filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.2)); }
+      100% { filter: drop-shadow(0 0 15px rgba(59, 130, 246, 0.4)); }
+    }
+
+    /* Form box styling */
+    .form-box {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(1rem, 3vw, 1.75rem);
+    }
+
+    /* Input and file upload styling */
+    .form-box input[type="file"],
+    .form-box input[type="password"] {
+      width: 100%;
+      padding: clamp(0.75rem, 2vw, 1rem) clamp(1rem, 3vw, 1.5rem);
+      background: rgba(15, 23, 42, 0.4);
+      border: 2px solid rgba(59, 130, 246, 0.2);
+      border-radius: clamp(0.75rem, 3vw, 1rem);
+      color: #f1f5f9;
+      font-size: clamp(0.9rem, 2vw, 1rem);
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .form-box input[type="file"]::-webkit-file-upload-button {
+      background: rgba(59, 130, 246, 0.2);
+      border: none;
+      border-radius: clamp(0.5rem, 2vw, 0.75rem);
+      padding: clamp(0.25rem, 1vw, 0.5rem) clamp(0.5rem, 2vw, 1rem);
+      color: #f1f5f9;
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(0.8rem, 2vw, 0.9rem);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .form-box input[type="file"]::-webkit-file-upload-button:hover {
+      background: rgba(59, 130, 246, 0.4);
+    }
+    .form-box input[type="file"]:focus,
+    .form-box input[type="password"]:focus {
+      outline: none;
+      border-color: rgba(59, 130, 246, 0.6);
+      background: rgba(15, 23, 42, 0.6);
+      box-shadow: 
+          0 0 0 4px rgba(59, 130, 246, 0.1),
+          0 0 20px rgba(59, 130, 246, 0.2);
+      transform: translateY(-2px);
+    }
+    .form-box input::placeholder {
+      color: #94a3b8;
+      transition: all 0.3s ease;
+    }
+    .form-box input:focus::placeholder {
+      color: #cbd5e1;
+    }
+
+    /* Button styling */
+    .btn {
+      width: 100%;
+      padding: clamp(0.75rem, 2vw, 1rem) clamp(1.5rem, 4vw, 2rem);
+      background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+      border: none;
+      border-radius: clamp(0.75rem, 3vw, 1rem);
+      color: white;
+      font-size: clamp(0.95rem, 2vw, 1.1rem);
+      font-weight: 600;
+      font-family: 'Space Grotesk', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.3);
+      margin-top: clamp(0.25rem, 1vw, 0.5rem);
+    }
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s ease;
+    }
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px -5px rgba(59, 130, 246, 0.4);
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    }
+    .btn:hover::before {
+      left: 100%;
+    }
+    .btn:active {
+      transform: translateY(-1px);
+    }
+
+    /* Flash message styling */
+    .error {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+      padding: clamp(0.75rem, 2vw, 1rem);
+      border-radius: clamp(0.75rem, 3vw, 1rem);
+      font-size: clamp(0.8rem, 2vw, 0.9rem);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      animation: flash-appear 0.5s ease-out;
+      text-align: center;
+      margin-top: clamp(1rem, 3vw, 1.5rem);
+    }
+    @keyframes flash-appear {
+      0% {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Navigation link styling */
+    .navigation {
+      text-align: center;
+      margin-top: clamp(1.5rem, 4vw, 2rem);
+      padding-top: clamp(1rem, 3vw, 1.5rem);
+      border-top: 1px solid rgba(59, 130, 246, 0.2);
+    }
+    .navigation p {
+      color: #cbd5e1;
+      font-size: clamp(0.8rem, 2vw, 0.95rem);
+      margin-bottom: 0;
+    }
+    .nav-link {
+      color: #60a5fa;
+      text-decoration: none;
+      font-weight: 600;
+      font-family: 'Space Grotesk', sans-serif;
+      transition: all 0.3s ease;
+      position: relative;
+      margin-left: clamp(0.25rem, 1vw, 0.5rem);
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(135deg, #60a5fa, #3b82f6);
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover {
+      color: #3b82f6;
+      transform: translateY(-1px);
+    }
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* iOS Safari specific fixes */
+    @supports (-webkit-touch-callout: none) {
+      body {
+        background: #0f172a !important;
+        background-attachment: fixed;
+      }
+    }
+  </style>
 </head>
 <body>
+  <!-- Enhanced floating orbs -->
+  <div class="floating-orb orb-1"></div>
+  <div class="floating-orb orb-2"></div>
+  <div class="floating-orb orb-3"></div>
+
   <div class="container">
     <h1>Encrypt Your Image 🔒</h1>
     
     <form action="{{ url_for('encrypt_pdf') }}" method="post" enctype="multipart/form-data" class="form-box">
-      <input type="file" name="file" accept="image/*" required><br>
-      <input type="password" name="password" placeholder="Enter Encryption Password" required><br>
+      <input type="file" name="file" accept="image/*" required>
+      <input type="password" name="password" placeholder="Enter Encryption Password" required>
       <button type="submit" class="btn">Encrypt & Download</button>
     </form>
 
@@ -28,4 +377,3 @@
   </div>
 </body>
 </html>
-

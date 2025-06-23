@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureVault - Advanced Encryption Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #1e293b 75%, #0f172a 100%);
+            color: #f1f5f9;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background Elements */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .floating-element {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 20s infinite linear;
+        }
+
+        .floating-element:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-element:nth-child(2) {
+            top: 20%;
+            right: 10%;
+            animation-delay: 5s;
+        }
+
+        .floating-element:nth-child(3) {
+            bottom: 20%;
+            left: 15%;
+            animation-delay: 10s;
+        }
+
+        .floating-element:nth-child(4) {
+            bottom: 10%;
+            right: 20%;
+            animation-delay: 15s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(90deg); }
+            50% { transform: translateY(-40px) rotate(180deg); }
+            75% { transform: translateY(-20px) rotate(270deg); }
+        }
+
+        /* Main Container */
+        .landing-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header Section */
+        .header-section {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding: 3rem 0;
+        }
+
+        .main-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 25%, #1d4ed8 50%, #1e40af 75%, #1e3a8a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: #cbd5e1;
+            margin-bottom: 2rem;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            color: #94a3b8;
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            line-height: 1.7;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .feature-card {
+            background: rgba(30, 58, 138, 0.3);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(147, 197, 253, 0.2);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(147, 197, 253, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 30px rgba(59, 130, 246, 0.3);
+            border-color: rgba(147, 197, 253, 0.4);
+        }
+
+        .feature-card:hover::before {
+            left: 100%;
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            position: relative;
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+        }
+
+        .feature-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #dbeafe;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .feature-description {
+            color: #cbd5e1;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        /* Security Stats Section */
+        .stats-section {
+            background: rgba(30, 58, 138, 0.2);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(147, 197, 253, 0.2);
+            border-radius: 2rem;
+            padding: 3rem 2rem;
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+
+        .stats-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 600;
+            color: #dbeafe;
+            margin-bottom: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .stat-item {
+            padding: 1.5rem;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 1rem;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #60a5fa;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Auth Section */
+        .auth-section {
+            background: rgba(30, 58, 138, 0.3);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(147, 197, 253, 0.3);
+            border-radius: 2rem;
+            padding: 3rem;
+            margin-bottom: 4rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+            animation: rotate 10s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
+        }
+
+        .auth-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #dbeafe;
+            margin-bottom: 1rem;
+        }
+
+        .auth-subtitle {
+            font-size: 1.1rem;
+            color: #94a3b8;
+            margin-bottom: 3rem;
+            line-height: 1.6;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .auth-btn {
+            padding: 1rem 3rem;
+            border-radius: 1rem;
+            text-decoration: none;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            min-width: 180px;
+            display: inline-block;
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .register-btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            color: white;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .auth-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .auth-btn:hover::before {
+            left: 100%;
+        }
+
+        /* Security Badges */
+        .security-badges {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .security-badge {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            color: #93c5fd;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Technology Stack */
+        .tech-section {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(147, 197, 253, 0.1);
+            border-radius: 2rem;
+            padding: 3rem 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .tech-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 600;
+            color: #dbeafe;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .tech-item {
+            background: rgba(30, 58, 138, 0.2);
+            border: 1px solid rgba(147, 197, 253, 0.2);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .tech-item:hover {
+            transform: translateY(-5px);
+            border-color: rgba(147, 197, 253, 0.4);
+        }
+
+        .tech-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .tech-name {
+            font-weight: 600;
+            color: #dbeafe;
+            margin-bottom: 0.5rem;
+        }
+
+        .tech-desc {
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .landing-container {
+                padding: 1rem;
+            }
+
+            .auth-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .auth-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .security-badges {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="floating-element">🔒</div>
+        <div class="floating-element">🛡️</div>
+        <div class="floating-element">🔐</div>
+        <div class="floating-element">⚡</div>
+    </div>
+
+    <div class="landing-container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <h1 class="main-title">SecureVault</h1>
+            <p class="subtitle">Advanced Image Encryption & Steganography Platform</p>
+            <p class="hero-description">
+                Welcome to the future of digital security. Our cutting-edge platform combines military-grade encryption 
+                with advanced steganography techniques to protect your most sensitive data. Whether you're securing 
+                confidential documents or hiding secret messages within images, SecureVault provides enterprise-level 
+                protection with an intuitive user experience.
+            </p>
+        </div>
+
+        <!-- Features Section -->
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🔐</div>
+                <h3 class="feature-title">Military-Grade Encryption</h3>
+                <p class="feature-description">
+                    Protect your files with AES-256 encryption, the same standard used by governments and financial institutions worldwide.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🖼️</div>
+                <h3 class="feature-title">Advanced Steganography</h3>
+                <p class="feature-description">
+                    Hide secret messages within images using sophisticated algorithms that are virtually undetectable to the naked eye.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3 class="feature-title">Lightning Fast Processing</h3>
+                <p class="feature-description">
+                    Experience blazing-fast encryption and decryption speeds with our optimized algorithms and modern infrastructure.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🛡️</div>
+                <h3 class="feature-title">Zero-Knowledge Architecture</h3>
+                <p class="feature-description">
+                    Your data never leaves your device unencrypted. We can't see your files, and neither can anyone else.
+                </p>
+            </div>
+        </div>
+
+        <!-- Security Stats -->
+        <div class="stats-section">
+            <h2 class="stats-title">Trusted by Security Professionals</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">256-bit</span>
+                    <span class="stat-label">AES Encryption</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">99.9%</span>
+                    <span class="stat-label">Uptime Guarantee</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">10,000+</span>
+                    <span class="stat-label">Files Protected Daily</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">0</span>
+                    <span class="stat-label">Data Breaches</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Technology Stack -->
+        <div class="tech-section">
+            <h2 class="tech-title">Powered by Advanced Technology</h2>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <div class="tech-icon">🔒</div>
+                    <div class="tech-name">AES-256 Encryption</div>
+                    <div class="tech-desc">Industry-standard symmetric encryption</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">🔑</div>
+                    <div class="tech-name">RSA Key Exchange</div>
+                    <div class="tech-desc">Secure key distribution protocol</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">🌐</div>
+                    <div class="tech-name">TLS 1.3</div>
+                    <div class="tech-desc">Latest transport layer security</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">🧮</div>
+                    <div class="tech-name">SHA-256 Hashing</div>
+                    <div class="tech-desc">Cryptographic hash function</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Authentication Section -->
+        <div class="auth-section">
+            <h2 class="auth-title">Get Started Today</h2>
+            <p class="auth-subtitle">
+                Join thousands of security-conscious users who trust SecureVault to protect their most valuable data. 
+                Create your account in seconds and start encrypting your files with military-grade security.
+            </p>
+            
+            <div class="auth-buttons">
+                <a href="{{ url_for('login') }}" class="auth-btn login-btn">
+                    🔐 Secure Login
+                </a>
+                <a href="{{ url_for('register') }}" class="auth-btn register-btn">
+                    🚀 Create Account
+                </a>
+            </div>
+
+            <div class="security-badges">
+                <div class="security-badge">
+                    <span>🛡️</span>
+                    <span>SOC 2 Compliant</span>
+                </div>
+                <div class="security-badge">
+                    <span>🔒</span>
+                    <span>GDPR Ready</span>
+                </div>
+                <div class="security-badge">
+                    <span>⚡</span>
+                    <span>99.9% Uptime</span>
+                </div>
+                <div class="security-badge">
+                    <span>🌍</span>
+                    <span>Global CDN</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

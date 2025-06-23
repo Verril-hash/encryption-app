@@ -5,3 +5,7 @@ Pillow
 PyPDF2
 fpdf
 streamlit
+flask-login
+flask-bcrypt
+flask-sqlalchemy
+stegano

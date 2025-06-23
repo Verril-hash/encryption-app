@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #1e293b 75%, #0f172a 100%);
+            /* Fallback for mobile browsers */
+            background-color: #0f172a;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            /* Force hardware acceleration for better mobile performance */
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+        }
+
+        /* Animated Background Grid */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
+            background-size: 60px 60px;
+            animation: grid-move 20s linear infinite;
+            z-index: -2;
+        }
+
+        @keyframes grid-move {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(60px, 60px); }
+        }
+
+        /* Floating Orbs */
+        .floating-orb {
+            position: fixed;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(147, 197, 253, 0.1));
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            animation: float 8s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        .orb-1 {
+            width: 200px;
+            height: 200px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 150px;
+            height: 150px;
+            top: 70%;
+            right: 10%;
+            animation-delay: 3s;
+        }
+
+        .orb-3 {
+            width: 100px;
+            height: 100px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 6s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-30px) rotate(120deg); }
+            66% { transform: translateY(15px) rotate(240deg); }
+        }
+
+        /* Main Container */
+        .register-container {
+            background: rgba(30, 58, 138, 0.25);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(147, 197, 253, 0.2);
+            border-radius: 2rem;
+            padding: 3rem 2.5rem;
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.25),
+                0 0 30px rgba(59, 130, 246, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            animation: container-entrance 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes container-entrance {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Subtle rotating border effect */
+        .register-container::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: conic-gradient(
+                from 0deg,
+                transparent,
+                rgba(59, 130, 246, 0.3),
+                transparent,
+                rgba(147, 197, 253, 0.3),
+                transparent
+            );
+            border-radius: 2rem;
+            animation: rotate-border 6s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes rotate-border {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Header Styling */
+        .register-container h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #1d4ed8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 2.5rem;
+            text-align: center;
+            animation: text-glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes text-glow {
+            0% { filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.2)); }
+            100% { filter: drop-shadow(0 0 15px rgba(59, 130, 246, 0.4)); }
+        }
+
+        /* Flash Messages */
+        .flash-messages {
+            margin-bottom: 1.5rem;
+        }
+
+        .flash-message {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            padding: 1rem;
+            border-radius: 1rem;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            animation: flash-appear 0.5s ease-out;
+            text-align: center;
+        }
+
+        @keyframes flash-appear {
+            0% {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Form Styling */
+        .register-container form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .register-container input[type="text"],
+        .register-container input[type="password"] {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: rgba(15, 23, 42, 0.4);
+            border: 2px solid rgba(59, 130, 246, 0.2);
+            border-radius: 1rem;
+            color: #f1f5f9;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .register-container input[type="text"]:focus,
+        .register-container input[type="password"]:focus {
+            outline: none;
+            border-color: rgba(59, 130, 246, 0.6);
+            background: rgba(15, 23, 42, 0.6);
+            box-shadow: 
+                0 0 0 4px rgba(59, 130, 246, 0.1),
+                0 0 20px rgba(59, 130, 246, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .register-container input::placeholder {
+            color: #94a3b8;
+            transition: all 0.3s ease;
+        }
+
+        .register-container input:focus::placeholder {
+            color: #cbd5e1;
+        }
+
+        /* Submit Button */
+        .register-container button[type="submit"] {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            border: none;
+            border-radius: 1rem;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            font-family: 'Space Grotesk', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.3);
+            margin-top: 0.5rem;
+        }
+
+        .register-container button[type="submit"]::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .register-container button[type="submit"]:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px -5px rgba(59, 130, 246, 0.4);
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        }
+
+        .register-container button[type="submit"]:hover::before {
+            left: 100%;
+        }
+
+        .register-container button[type="submit"]:active {
+            transform: translateY(-1px);
+        }
+
+        /* Login Link */
+        .register-container p {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(59, 130, 246, 0.2);
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+
+        .register-container a {
+            color: #60a5fa;
+            text-decoration: none;
+            font-weight: 600;
+            font-family: 'Space Grotesk', sans-serif;
+            transition: all 0.3s ease;
+            position: relative;
+            margin-left: 0.5rem;
+        }
+
+        .register-container a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            transition: width 0.3s ease;
+        }
+
+        .register-container a:hover {
+            color: #3b82f6;
+            transform: translateY(-1px);
+        }
+
+        .register-container a:hover::after {
+            width: 100%;
+        }
+
+        /* Security Badge */
+        .security-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+            padding: 0.75rem;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 0.75rem;
+            color: #6ee7b7;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .security-icon {
+            font-size: 1rem;
+            animation: pulse-security 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-security {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Enhanced Mobile Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                /* Force dark background on mobile */
+                background: #0f172a !important;
+                background-image: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #1e293b 75%, #0f172a 100%) !important;
+                min-height: 100vh;
+                min-height: -webkit-fill-available;
+            }
+
+            html {
+                height: -webkit-fill-available;
+            }
+
+            .register-container {
+                margin: 1rem;
+                padding: 2rem 1.5rem;
+                max-width: 400px;
+                /* Enhanced mobile background */
+                background: rgba(30, 58, 138, 0.3) !important;
+                backdrop-filter: blur(15px);
+                -webkit-backdrop-filter: blur(15px);
+            }
+
+            .register-container h1 {
+                font-size: 2rem;
+            }
+
+            .orb-1, .orb-2, .orb-3 {
+                opacity: 0.3;
+            }
+
+            /* Ensure backdrop filters work on mobile */
+            .register-container input[type="text"],
+            .register-container input[type="password"] {
+                background: rgba(15, 23, 42, 0.6) !important;
+                backdrop-filter: blur(5px);
+                -webkit-backdrop-filter: blur(5px);
+            }
+
+            .flash-message {
+                backdrop-filter: blur(5px);
+                -webkit-backdrop-filter: blur(5px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                /* Double ensure dark background on small mobile */
+                background: #0f172a !important;
+                background-image: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #1e293b 75%, #0f172a 100%) !important;
+            }
+
+            .register-container {
+                padding: 1.5rem 1rem;
+                /* Triple ensure container background */
+                background: rgba(30, 58, 138, 0.35) !important;
+            }
+
+            .register-container h1 {
+                font-size: 1.75rem;
+            }
+
+            .register-container input[type="text"],
+            .register-container input[type="password"] {
+                padding: 0.875rem 1.25rem;
+                background: rgba(15, 23, 42, 0.7) !important;
+            }
+        }
+
+        /* iOS Safari specific fixes */
+        @supports (-webkit-touch-callout: none) {
+            body {
+                background: #0f172a !important;
+                background-attachment: fixed;
+            }
+            
+            .register-container {
+                background: rgba(30, 58, 138, 0.4) !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Orbs -->
+    <div class="floating-orb orb-1"></div>
+    <div class="floating-orb orb-2"></div>
+    <div class="floating-orb orb-3"></div>
+
+    <div class="register-container">
+        <h1>Register</h1>
+        
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="flash-messages">
+            <div class="flash-message">
+                {{ messages[0] }}
+            </div>
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            <div class="form-group">
+                <input type="text" name="username" placeholder="Username" required>
+            </div>
+
+            <div class="form-group">
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+
+            <button type="submit">Register</button>
+        </form>
+
+        <div class="security-badge">
+            <span class="security-icon">🔒</span>
+            <span>256-bit SSL Encryption</span>
+        </div>
+
+        <p>Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+    </div>
+</body>
+</html>

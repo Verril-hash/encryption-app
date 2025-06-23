@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Enhanced glassmorphism body styling */
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #1e293b 75%, #0f172a 100%);
+            background-color: #0f172a;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            /* Force hardware acceleration */
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+        }
+
+        /* Animated Background Grid */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
+            background-size: 80px 80px;
+            animation: grid-move 25s linear infinite;
+            z-index: -3;
+        }
+
+        @keyframes grid-move {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(80px, 80px); }
+        }
+
+        /* Floating Orbs for Dynamic Background */
+        .floating-orb {
+            position: fixed;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(147, 197, 253, 0.08));
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            animation: float 12s ease-in-out infinite;
+            z-index: -2;
+        }
+
+        .orb-1 {
+            width: 300px;
+            height: 300px;
+            top: 5%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 200px;
+            height: 200px;
+            top: 60%;
+            right: 5%;
+            animation-delay: 4s;
+        }
+
+        .orb-3 {
+            width: 150px;
+            height: 150px;
+            bottom: 10%;
+            left: 15%;
+            animation-delay: 8s;
+        }
+
+        .orb-4 {
+            width: 120px;
+            height: 120px;
+            top: 30%;
+            right: 25%;
+            animation-delay: 2s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+            25% { transform: translateY(-40px) rotate(90deg) scale(1.1); }
+            50% { transform: translateY(20px) rotate(180deg) scale(0.9); }
+            75% { transform: translateY(-20px) rotate(270deg) scale(1.05); }
+        }
+
+        /* Dashboard-specific styling with enhanced glassmorphism */
+        .dashboard-wrapper {
+            font-family: 'Inter', sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .dashboard-wrapper h1 {
+            text-align: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #1d4ed8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 3rem;
+            animation: title-glow 4s ease-in-out infinite alternate;
+            position: relative;
+        }
+
+        @keyframes title-glow {
+            0% { 
+                filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.3));
+                transform: scale(1);
+            }
+            100% { 
+                filter: drop-shadow(0 0 25px rgba(59, 130, 246, 0.5));
+                transform: scale(1.02);
+            }
+        }
+
+        /* Enhanced card container with staggered animations */
+        .dashboard-wrapper .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .dashboard-wrapper .card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: card-entrance 0.8s ease-out;
+        }
+
+        .dashboard-wrapper .card-link:nth-child(1) { animation-delay: 0.1s; }
+        .dashboard-wrapper .card-link:nth-child(2) { animation-delay: 0.2s; }
+        .dashboard-wrapper .card-link:nth-child(3) { animation-delay: 0.3s; }
+        .dashboard-wrapper .card-link:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes card-entrance {
+            0% {
+                opacity: 0;
+                transform: translateY(40px) scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Enhanced glassmorphism cards */
+        .dashboard-wrapper .card {
+            background: rgba(30, 58, 138, 0.25);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(147, 197, 253, 0.2);
+            border-radius: 2rem;
+            padding: 3rem 2rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            min-height: 220px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.25),
+                0 0 30px rgba(59, 130, 246, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        /* Rotating border effect */
+        .dashboard-wrapper .card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: conic-gradient(
+                from 0deg,
+                transparent,
+                rgba(59, 130, 246, 0.2),
+                transparent,
+                rgba(147, 197, 253, 0.2),
+                transparent
+            );
+            border-radius: 2rem;
+            animation: rotate-border 8s linear infinite;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        @keyframes rotate-border {
+            to { transform: rotate(360deg); }
+        }
+
+        .dashboard-wrapper .card:hover::before {
+            opacity: 1;
+        }
+
+        /* Shimmer effect */
+        .dashboard-wrapper .card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(147, 197, 253, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .dashboard-wrapper .card:hover {
+            transform: translateY(-15px) scale(1.03);
+            box-shadow: 
+                0 35px 70px -12px rgba(0, 0, 0, 0.3),
+                0 0 50px rgba(59, 130, 246, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            border-color: rgba(147, 197, 253, 0.4);
+            background: rgba(30, 58, 138, 0.35);
+        }
+
+        .dashboard-wrapper .card:hover::after {
+            left: 100%;
+        }
+
+        /* Enhanced card titles */
+        .dashboard-wrapper .card h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin: 0;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-wrapper .card:hover h2 {
+            transform: scale(1.05);
+            color: #ffffff;
+        }
+
+        /* Modern icon circles with enhanced effects */
+        .dashboard-wrapper .card h2::before {
+            content: '';
+            display: block;
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(147, 197, 253, 0.3);
+            transition: all 0.4s ease;
+        }
+
+        .dashboard-wrapper .card:hover h2::before {
+            transform: scale(1.1) rotate(5deg);
+            border-color: rgba(147, 197, 253, 0.5);
+        }
+
+        /* Enhanced card-specific styling */
+        .dashboard-wrapper .card-link:nth-child(1) .card h2::before {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 
+                inset 0 0 0 15px rgba(16, 185, 129, 0.15),
+                0 0 30px rgba(16, 185, 129, 0.3);
+        }
+
+        .dashboard-wrapper .card-link:nth-child(1) .card h2::after {
+            content: 'SECURE';
+            position: absolute;
+            top: -75px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.15);
+            padding: 6px 12px;
+            border-radius: 25px;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .dashboard-wrapper .card-link:nth-child(2) .card h2::before {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            box-shadow: 
+                inset 0 0 0 15px rgba(245, 158, 11, 0.15),
+                0 0 30px rgba(245, 158, 11, 0.3);
+        }
+
+        .dashboard-wrapper .card-link:nth-child(2) .card h2::after {
+            content: 'UNLOCK';
+            position: absolute;
+            top: -75px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: #f59e0b;
+            background: rgba(245, 158, 11, 0.15);
+            padding: 6px 12px;
+            border-radius: 25px;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .dashboard-wrapper .card-link:nth-child(3) .card h2::before {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            box-shadow: 
+                inset 0 0 0 15px rgba(139, 92, 246, 0.15),
+                0 0 30px rgba(139, 92, 246, 0.3);
+        }
+
+        .dashboard-wrapper .card-link:nth-child(3) .card h2::after {
+            content: 'HIDDEN';
+            position: absolute;
+            top: -75px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: #8b5cf6;
+            background: rgba(139, 92, 246, 0.15);
+            padding: 6px 12px;
+            border-radius: 25px;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .dashboard-wrapper .card-link:nth-child(4) .card h2::before {
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            box-shadow: 
+                inset 0 0 0 15px rgba(6, 182, 212, 0.15),
+                0 0 30px rgba(6, 182, 212, 0.3);
+        }
+
+        .dashboard-wrapper .card-link:nth-child(4) .card h2::after {
+            content: 'MONITOR';
+            position: absolute;
+            top: -75px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: #06b6d4;
+            background: rgba(6, 182, 212, 0.15);
+            padding: 6px 12px;
+            border-radius: 25px;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        /* Enhanced pulsing animation */
+        .dashboard-wrapper .card h2::before {
+            animation: dashboard-pulse-glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes dashboard-pulse-glow {
+            0% { 
+                transform: scale(1);
+                opacity: 0.9;
+            }
+            100% { 
+                transform: scale(1.08);
+                opacity: 1;
+            }
+        }
+
+        /* Enhanced description text */
+        .dashboard-wrapper .card-description {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-wrapper .card:hover .card-description {
+            color: #f1f5f9;
+            transform: translateY(-2px);
+        }
+
+        /* Enhanced navigation section */
+        .dashboard-wrapper .navigation {
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .dashboard-wrapper .nav-link {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 1.5rem;
+            text-decoration: none;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            box-shadow: 
+                0 15px 35px -5px rgba(220, 38, 38, 0.3),
+                0 0 20px rgba(220, 38, 38, 0.2);
+        }
+
+        .dashboard-wrapper .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .dashboard-wrapper .nav-link:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 
+                0 25px 50px -5px rgba(220, 38, 38, 0.4),
+                0 0 40px rgba(220, 38, 38, 0.3);
+            border-color: rgba(220, 38, 38, 0.6);
+            background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+        }
+
+        .dashboard-wrapper .nav-link:hover::before {
+            left: 100%;
+        }
+
+        /* Enhanced mobile responsive design */
+        @media (max-width: 768px) {
+            body {
+                background: #0f172a !important;
+                background-image: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #1e293b 75%, #0f172a 100%) !important;
+                min-height: 100vh;
+                min-height: -webkit-fill-available;
+            }
+
+            html {
+                height: -webkit-fill-available;
+            }
+
+            .dashboard-wrapper {
+                padding: 1.5rem;
+            }
+
+            .dashboard-wrapper .card-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .dashboard-wrapper .card {
+                padding: 2.5rem 1.5rem;
+                min-height: 200px;
+                background: rgba(30, 58, 138, 0.3) !important;
+            }
+
+            .dashboard-wrapper h1 {
+                font-size: 2.5rem;
+            }
+
+            .orb-1, .orb-2, .orb-3, .orb-4 {
+                opacity: 0.4;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                background: #0f172a !important;
+                background-image: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #1e293b 75%, #0f172a 100%) !important;
+            }
+
+            .dashboard-wrapper {
+                padding: 1rem;
+            }
+
+            .dashboard-wrapper .card {
+                padding: 2rem 1rem;
+                min-height: 180px;
+                background: rgba(30, 58, 138, 0.35) !important;
+            }
+
+            .dashboard-wrapper .nav-link {
+                padding: 0.875rem 1.5rem;
+                font-size: 1rem;
+            }
+
+            .dashboard-wrapper h1 {
+                font-size: 2rem;
+            }
+        }
+
+        /* iOS Safari specific fixes */
+        @supports (-webkit-touch-callout: none) {
+            body {
+                background: #0f172a !important;
+                background-attachment: fixed;
+            }
+            
+            .dashboard-wrapper .card {
+                background: rgba(30, 58, 138, 0.4) !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Enhanced Floating Orbs -->
+    <div class="floating-orb orb-1"></div>
+    <div class="floating-orb orb-2"></div>
+    <div class="floating-orb orb-3"></div>
+    <div class="floating-orb orb-4"></div>
+
+    <div class="dashboard-wrapper">
+        <h1>Dashboard</h1>
+        <div class="card-container">
+            <a href="{{ url_for('encrypt_pdf') }}" class="card-link">
+                <div class="card">
+                    <h2>Encrypt</h2>
+                    <p class="card-description">Protect your files with advanced encryption</p>
+                </div>
+            </a>
+            <a href="{{ url_for('decrypt_pdf') }}" class="card-link">
+                <div class="card">
+                    <h2>Decrypt</h2>
+                    <p class="card-description">Safely restore your encrypted data</p>
+                </div>
+            </a>
+            <a href="{{ url_for('steganography') }}" class="card-link">
+                <div class="card">
+                    <h2>Steganography</h2>
+                    <p class="card-description">Hide messages within image files</p>
+                </div>
+            </a>
+            <a href="{{ url_for('activity') }}" class="card-link">
+                <div class="card">
+                    <h2>Activity</h2>
+                    <p class="card-description">Monitor your security operations</p>
+                </div>
+            </a>
+        </div>
+        <div class="navigation">
+            <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
+        </div>
+    </div>
+</body>
+</html>
